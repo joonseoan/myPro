@@ -4,15 +4,30 @@ import ReactDOM from 'react-dom';
   
 import LogPass from './components/login';
 
+import WKey from './weatherAPI';
+
+import OpenWeatherMap from 'react-open-weather-map';
+
+import axios from 'axios';
+ 
+const AppKey = WKey;
+
+const wURL = `http://api.openweathermap.org/data/2.5/forecast?q=seoul,kr&mode=json&appid=${AppKey}`;
 
 // **************** In this case, there is no page reload.!!!!!
-
 class App extends Component {
     
     constructor (props) {
         super(props);
 
-        this.state = {date : new Date ()};
+        this.state = {
+            date : new Date (),
+            data : null
+            
+            // city and country defintion
+            
+        
+        };
     }
 
     componentDidMount() {
@@ -20,23 +35,52 @@ class App extends Component {
             () => this.setState({date : new Date()}),
             1000
         );
+
+        //const wURL = `http://api.openweathermap.org/data/2.5/forecast?q=${city},${country}&mode=json&appid=${Appkey}`;
+
+        axios.get(wURL)
+        .then((response) => {
+       // console.log(response);
+            this.setState ({
+                data : response
+            })
+        })
+            .catch((error) => {
+                console.log(error);
+        });
+
+        console.log(this.state.data);
     }
 
     componentWillUnmount() {
         clearInterval (this.timerID);
     }
 
-       render () {
-           return (
-               <div>
-                   <LogPass />         
-                   <h1>Please, Login!!!</h1>
-                   <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
-               </div>
-   
-           );
-       }
+    
+    
+    
+      
+    
+
+    render () {
+
+        
+
+//        console.log(this.state.data);
+
+        return (
+            <div>
+                <LogPass />         
+                <h1>Please, Login!!!</h1>
+                <h2>It is { this.state.date.toLocaleTimeString() }.</h2>
+            </div>
+
+        );
+    } 
+
    }
+
+   
    
    ReactDOM.render (<App />, document.querySelector('.container'));
 
@@ -71,8 +115,6 @@ setInterval (tick, 1000);
 
 
 
-
-
 /*
 // --------------------------------- study from React.js --------------------------------------------
 // Findings
@@ -104,19 +146,22 @@ class Clock extends Component {
         // "tick() {}" is not used as an argument of a function.
         //    this.tick() is used to store the object in tick().  
         const timerID = setInterval(() => this.setState ({date : new Date()}), 1000);
+        //1)
+        //this.timerID = setInterval(() => this.setState ({date : new Date()}), 1000);
         //setState({date : new Date()});
     }
     
     componentWillUnmount () {
+        //clearInterval(this.timerID);
         clearInterval (timerID);
     }
     
     
-    tick() {
-        this.setState({date : new Date()});
-    }
+    //tick() {
+    //    this.setState({date : new Date()});
+    //}
     
-
+    
 
     render () {
 
